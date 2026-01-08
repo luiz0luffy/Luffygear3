@@ -1,45 +1,23 @@
 do
-    -- lock simples contra reinject
-    if _G.__LG3 then return end
-    _G.__LG3 = true
-
-    local Players = game:GetService("Players")
-    local plr = Players.LocalPlayer
-    if not plr then return end
+    -- Anti re-inject
+    if _G.__LUFFY_G3 then return end
+    _G.__LUFFY_G3 = true
 
     local ok = true
 
-    -- valida ambiente básico
-    local function safe(x)
-        return pcall(function() return x end)
-    end
-
-    if not safe(game) or not safe(workspace) then
-        ok = false
-    end
-
-    -- anti edição leve (checksum fraco porém estável)
-    local mark = tostring(game.ClassName)
+    -- Integridade leve (não depende de debug/hook)
+    local mark = tostring(game):len() * 7
     task.delay(1, function()
-        if tostring(game.ClassName) ~= mark then
+        if tostring(game):len() * 7 ~= mark then
             ok = false
         end
     end)
 
-    -- anti hook NÃO agressivo (compatível com mobile)
-    local bad = {
-        rawget(_G,"hookfunction"),
-        rawget(_G,"getrawmetatable"),
-        rawget(_G,"setreadonly")
-    }
+    -- Ambiente mínimo válido
+    local Players = game:GetService("Players")
+    local lp = Players.LocalPlayer
+    if not lp then ok = false end
 
-    for _,v in ipairs(bad) do
-        if typeof(v) == "function" then
-            ok = false
-        end
-    end
-
-    -- falha silenciosa
     if not ok then
         task.spawn(function()
             while true do task.wait() end
