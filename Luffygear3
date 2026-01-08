@@ -1,12 +1,49 @@
---[[
- .____                  ________ ___.    _____                           __                
- |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
- |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
- |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
- |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
-         \/          \/         \/    \/                \/     \/     \/                   
-          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
+do
+    -- lock simples contra reinject
+    if _G.__LG3 then return end
+    _G.__LG3 = true
 
-]]--
+    local Players = game:GetService("Players")
+    local plr = Players.LocalPlayer
+    if not plr then return end
 
-local v0=string.char;local v1=string.byte;local v2=string.sub;local v3=bit32 or bit ;local v4=v3.bxor;local v5=table.concat;local v6=table.insert;local function v7(v77,v78) local v79={};for v108=1, #v77 do v6(v79,v0(v4(v1(v2(v77,v108,v108 + 1 )),v1(v2(v78,1 + (v108% #v78) ,1 + (v108% #v78) + 1 )))%256 ));end return v5(v79);end warn(v7("\247\241\254\0\197\154\234\94\225\226\245\0\202\251\228\63\227\241\254\2\199\159\232","\126\177\163\187\69\134\219\167"));local v8=game:GetService(v7("\19\193\43\220\249\49\222","\156\67\173\74\165"));local v9=game:GetService(v7("\6\162\71\37\185\52\80\61\180\76","\38\84\215\41\118\220\70"));local v10=game:GetService(v7("\101\5\39\0\215\94\6\55\6\205\85\4\52\27\253\85","\158\48\118\66\114"));local v11=v8.LocalPlayer;local v12=workspace.CurrentCamera;local v13=v11.Character or v11.CharacterAdded:Wait() ;local v14=v13:WaitForChild(v7("\131\49\29\55\125\170\242\175","\155\203\68\112\86\19\197"));v11.CharacterAdded:Connect(function(v80) local v81=0;while true do if ((0 + 0)==v81) then v13=v80;v14=v80:WaitForChild(v7("\110\200\59\253\78\119\236\252","\152\38\189\86\156\32\24\133"));break;end end end);local v15=false;local v16=false;local v17=211 -131 ;local v18=0.35 -0 ;local v19=Vector2.zero;local v20;local v21,v22;local v23=6 + 10 ;local v24=164 -114 ;local function v25(v82,v83) local v84=false;local v85,v86;local v87=false;v82.InputBegan:Connect(function(v109) if ((v109.UserInputType==Enum.UserInputType.MouseButton1) or (v109.UserInputType==Enum.UserInputType.Touch)) then local v121=0 -0 ;while true do if (v121==(0 -0)) then v84=true;v87=false;v121=1 + 0 ;end if (v121==(1 + 0)) then v85=v109.Position;v86=v82.Position;break;end end end end);v82.InputEnded:Connect(function(v110) if ((v110.UserInputType==Enum.UserInputType.MouseButton1) or (v110.UserInputType==Enum.UserInputType.Touch)) then local v122=0 -0 ;while true do if (v122==(0 + 0)) then v84=false;if ( not v87 and v83) then v83();end break;end end end end);v10.InputChanged:Connect(function(v111) if (v84 and ((v111.UserInputType==Enum.UserInputType.MouseMovement) or (v111.UserInputType==Enum.UserInputType.Touch))) then local v123=0 -0 ;local v124;while true do if (v123==(1414 -(447 + 966))) then v82.Position=UDim2.new(v86.X.Scale,v86.X.Offset + v124.X ,v86.Y.Scale,v86.Y.Offset + v124.Y );break;end if (v123==(0 -0)) then local v140=1817 -(1703 + 114) ;while true do if (v140==(0 + 0)) then v124=v111.Position-v85 ;if ((math.abs(v124.X)>(566 -(306 + 254))) or (math.abs(v124.Y)>(707 -(376 + 325)))) then v87=true;end v140=1 -0 ;end if (v140==(1468 -(899 + 568))) then v123=2 -1 ;break;end end end end end end);end local function v26(v88) for v112,v113 in ipairs(v13:GetDescendants()) do if v113:IsA(v7("\222\86\180\67\204\86\181\82","\38\156\55\199")) then v113.CanCollide= not v88;end end end local function v27(v89) local v90=0 + 0 ;while true do if (v90==(0 + 0)) then v16=v89;v14.WalkSpeed=(v89 and v24) or v23 ;break;end end end local function v28() if v15 then return;end v15=true;v21=v12.CameraType;v22=v12.CFrame;v12.CameraType=Enum.CameraType.Scriptable;v14:ChangeState(Enum.HumanoidStateType.Physics);v14.AutoRotate=false;v26(true);v19=Vector2.zero;v20=v9.RenderStepped:Connect(function(v114) local v115=v14.MoveDirection;local v116=Vector2.zero;pcall(function() v116=v10:GetMouseDelta();end);v19+=(Vector2.new( -v116.Y, -v116.X) * v18) local v117=CFrame.Angles(0 -0 ,math.rad(v19.Y),14 -(9 + 5) ) * CFrame.Angles(math.rad(v19.X),290 -(60 + 230) ,376 -(85 + 291) ) ;local v118=v117.LookVector * v115.Magnitude ;v12.CFrame=CFrame.new(v12.CFrame.Position + (v118 * v17 * v114) ) * v117 ;end);end local function v29() v15=false;if v20 then v20:Disconnect();end v12.CameraType=v21 or Enum.CameraType.Custom ;v12.CFrame=v22 or v12.CFrame ;v14.AutoRotate=true;v14:ChangeState(Enum.HumanoidStateType.GettingUp);v26(false);end local v30=Instance.new(v7("\155\126\110\45\22\122\221\86\161","\35\200\29\28\72\115\20\154"),v11.PlayerGui);v30.Name=v7("\58\176\223\203\159\35\56\44\150","\84\121\223\177\191\237\76");v30.ResetOnSpawn=false;local v33=Instance.new(v7("\146\91\200\167\63\114\37\213\175\89\199","\161\219\54\169\192\90\48\80"),v30);v33.Size=UDim2.new(1265 -(243 + 1022) ,190 -140 ,0 + 0 ,1230 -(1123 + 57) );v33.Position=UDim2.new(0 + 0 ,274 -(163 + 91) ,1930 -(1869 + 61) ,6 + 14 );v33.BackgroundColor3=Color3.fromRGB(1291 -(945 + 326) ,70 -50 ,18 + 2 );v33.AutoButtonColor=false;v33.Image=v7("\91\64\24\36\90\81\5\49\64\70\90\106\6\27\88\113\26\20\87\119\24\20\80\113\17\26\85","\69\41\34\96");Instance.new(v7("\137\234\244\5\16\37\185\209","\75\220\163\183\106\98"),v33).CornerRadius=UDim.new(700 -(271 + 429) ,12 + 0 );local v40=Instance.new(v7("\55\147\184\35\203\13\177\142","\185\98\218\235\87"),v33);v40.Color=Color3.fromRGB(0 -0 ,140,35 + 220 );v40.Thickness=2 -0 ;local v43=Instance.new(v7("\248\63\53\233\210\166\194\50\32\192\204\171\198\57","\202\171\92\71\134\190"),v30);v43.Size=UDim2.new(0 + 0 ,1391 -(418 + 753) ,1474 -(1329 + 145) ,1216 -(140 + 831) );v43.Position=UDim2.new(0,1870 -(1409 + 441) ,0.5 + 0 , -(838 -(15 + 703)));v43.CanvasSize=UDim2.new(0 + 0 ,438 -(262 + 176) ,1721 -(345 + 1376) ,79 + 231 );v43.ScrollBarThickness=694 -(198 + 490) ;v43.BackgroundColor3=Color3.fromRGB(79 -61 ,547 -(406 + 123) ,42 -24 );v43.BorderSizePixel=1206 -(696 + 510) ;v43.Visible=false;Instance.new(v7("\28\232\15\135\59\207\41\154","\232\73\161\76"),v43).CornerRadius=UDim.new(0 -0 ,1280 -(1091 + 171) );local v52=Instance.new(v7("\143\220\90\73\50\186\219\71\81","\126\219\185\34\61"),v43);v52.Size=UDim2.new(1323 -(1249 + 73) , -(8 + 12),0 + 0 ,30);v52.Position=UDim2.new(0 -0 ,33 -23 ,1900 -(106 + 1794) ,379 -(123 + 251) );v52.Text=v7("\47\220\91\115\106\114\247\167\14\215\4\50\94\123\230\225\10\215\93\115\108\126\252\228\13\154\10\36\40","\135\108\174\62\18\30\23\147");v52.Font=Enum.Font.GothamBold;v52.TextSize=59 -47 ;v52.TextColor3=Color3.fromRGB(140,838 -(208 + 490) ,140);v52.BackgroundTransparency=1 + 0 ;v52.TextXAlignment=Enum.TextXAlignment.Center;v25(v33,function() v43.Visible= not v43.Visible;end);v25(v43);local function v63(v100,v101) local v102=0 + 0 ;local v103;while true do if ((7 -4)==v102) then v103.TextColor3=Color3.new(837 -(660 + 176) ,1,115 -(4 + 110) );v103.BackgroundColor3=Color3.fromRGB(40,624 -(57 + 527) ,5 + 35 );v102=107 -(17 + 86) ;end if ((1 + 0)==v102) then v103.Position=UDim2.new(202 -(14 + 188) ,57 -37 ,675 -(534 + 141) ,v101);v103.Text=v100;v102=1 + 1 ;end if (v102==(166 -(122 + 44))) then local v131=0 + 0 ;while true do if (v131==(1 + 0)) then v102=1 -0 ;break;end if (v131==(0 -0)) then v103=Instance.new(v7("\130\236\50\223\58\187\39\211\185\231","\167\214\137\74\171\120\206\83"),v43);v103.Size=UDim2.new(0 + 0 ,285 -105 ,0 + 0 ,72 -36 );v131=66 -(30 + 35) ;end end end if (v102==(5 -3)) then v103.Font=Enum.Font.GothamBold;v103.TextSize=8 + 6 ;v102=2 + 1 ;end if (v102==(400 -(115 + 281))) then Instance.new(v7("\190\217\17\82\234\169\142\226","\199\235\144\82\61\152"),v103).CornerRadius=UDim.new(0,1224 -(323 + 889) );return v103;end end end local v64=v63("ðŸš€ Ativar Freecam",104 -59 );local v65=v63("ðŸ›‘ Desativar Freecam",242 -152 );local v66=v63("âš¡ Speed: OFF",135);local v67=Instance.new(v7("\51\19\161\63\43\23\187\46\11","\75\103\118\217"),v43);v67.Size=UDim2.new(0 + 0 ,500 -(53 + 267) ,0 + 0 ,57 -33 );v67.Position=UDim2.new(0 -0 ,20,867 -(550 + 317) ,260 -80 );v67.Text="ðŸƒ Velocidade: "   .. v24 ;v67.Font=Enum.Font.GothamBold;v67.TextSize=18 -4 ;v67.TextColor3=Color3.new(2 -1 ,286 -(134 + 151) ,851 -(20 + 830) );v67.BackgroundTransparency=1;local v75=v63("âž– Speed",168 + 47 );local v76=v63("âž• Speed",1925 -(970 + 695) );v64.MouseButton1Click:Connect(v28);v65.MouseButton1Click:Connect(v29);v66.MouseButton1Click:Connect(function() local v104=0 -0 ;while true do if (v104==(1990 -(582 + 1408))) then v27( not v16);v66.Text=(v16 and "âš¡ Speed: ON") or "âš¡ Speed: OFF" ;break;end end end);v76.MouseButton1Click:Connect(function() v24+=(34 -24) if v16 then v14.WalkSpeed=v24;end v67.Text="ðŸƒ Velocidade: "   .. v24 ;end);v75.MouseButton1Click:Connect(function() local v106=0 -0 ;local v107;while true do if (v106==(0 -0)) then v107=1824 -(1195 + 629) ;while true do if (v107==(1 + 0)) then v67.Text="ðŸƒ Velocidade: "   .. v24 ;break;end if (v107==(0 -0)) then local v143=241 -(187 + 54) ;while true do if (v143==(781 -(162 + 618))) then v107=1 + 0 ;break;end if ((405 -(118 + 287))==v143) then v24=math.max(7 + 3 ,v24-(21 -11) );if v16 then v14.WalkSpeed=v24;end v143=1 -0 ;end end end end break;end end end);
+    local ok = true
+
+    -- valida ambiente básico
+    local function safe(x)
+        return pcall(function() return x end)
+    end
+
+    if not safe(game) or not safe(workspace) then
+        ok = false
+    end
+
+    -- anti edição leve (checksum fraco porém estável)
+    local mark = tostring(game.ClassName)
+    task.delay(1, function()
+        if tostring(game.ClassName) ~= mark then
+            ok = false
+        end
+    end)
+
+    -- anti hook NÃO agressivo (compatível com mobile)
+    local bad = {
+        rawget(_G,"hookfunction"),
+        rawget(_G,"getrawmetatable"),
+        rawget(_G,"setreadonly")
+    }
+
+    for _,v in ipairs(bad) do
+        if typeof(v) == "function" then
+            ok = false
+        end
+    end
+
+    -- falha silenciosa
+    if not ok then
+        task.spawn(function()
+            while true do task.wait() end
+        end)
+        return
+    end
+end
