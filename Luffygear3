@@ -1,3 +1,6 @@
+-- DEBUG
+warn("FREECAM PANEL CARREGADO")
+
 -- 🧠 SERVIÇOS
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -6,8 +9,14 @@ local UIS = game:GetService("UserInputService")
 -- 👤 PLAYER
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
+
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
+
+player.CharacterAdded:Connect(function(char)
+	character = char
+	humanoid = char:WaitForChild("Humanoid")
+end)
 
 -- ⚙️ VARIÁVEIS
 local freecamEnabled = false
@@ -82,7 +91,7 @@ local function setSpeed(state)
 	humanoid.WalkSpeed = state and speedValue or normalSpeed
 end
 
--- 🚀 FREECAM
+-- 🚀 FREECAM (SAFE PARA DELTA)
 local function enableFreecam()
 	if freecamEnabled then return end
 	freecamEnabled = true
@@ -99,7 +108,11 @@ local function enableFreecam()
 
 	conn = RunService.RenderStepped:Connect(function(dt)
 		local move = humanoid.MoveDirection
-		local delta = UIS:GetMouseDelta()
+
+		local delta = Vector2.zero
+		pcall(function()
+			delta = UIS:GetMouseDelta()
+		end)
 
 		rot += Vector2.new(-delta.Y, -delta.X) * sensitivity
 
@@ -130,7 +143,7 @@ local gui = Instance.new("ScreenGui", player.PlayerGui)
 gui.Name = "ControlUI"
 gui.ResetOnSpawn = false
 
--- 🟦 BOTÃO DE ABRIR PAINEL (IMAGEM + BORDA AZUL)
+-- 🟦 BOTÃO DE ABRIR PAINEL
 local toggleUI = Instance.new("ImageButton", gui)
 toggleUI.Size = UDim2.new(0, 50, 0, 50)
 toggleUI.Position = UDim2.new(0, 20, 0, 20)
@@ -143,7 +156,6 @@ Instance.new("UICorner", toggleUI).CornerRadius = UDim.new(0, 12)
 local toggleStroke = Instance.new("UIStroke", toggleUI)
 toggleStroke.Color = Color3.fromRGB(0,140,255)
 toggleStroke.Thickness = 2
-toggleStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
 -- 📜 PAINEL
 local frame = Instance.new("ScrollingFrame", gui)
@@ -173,7 +185,7 @@ makeDraggable(toggleUI, function()
 end)
 makeDraggable(frame)
 
--- 🔘 FUNÇÃO BOTÃO
+-- 🔘 BOTÕES
 local function button(txt, y)
 	local b = Instance.new("TextButton", frame)
 	b.Size = UDim2.new(0, 180, 0, 36)
@@ -187,7 +199,6 @@ local function button(txt, y)
 	return b
 end
 
--- 🔘 BOTÕES
 local freeOn  = button("🚀 Ativar Freecam", 45)
 local freeOff = button("🛑 Desativar Freecam", 90)
 local speedBtn = button("⚡ Speed: OFF", 135)
@@ -204,7 +215,6 @@ speedLabel.BackgroundTransparency = 1
 local minusBtn = button("➖ Speed", 215)
 local plusBtn  = button("➕ Speed", 260)
 
--- 🎮 CONEXÕES
 freeOn.MouseButton1Click:Connect(enableFreecam)
 freeOff.MouseButton1Click:Connect(disableFreecam)
 
