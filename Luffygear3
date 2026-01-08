@@ -1,5 +1,6 @@
-local Fluent - loadstring(game:HttpGet("https://raw.githubusercontent.com/luffygear3.v1/freecam-panel/main/main.lua", true))()
+local Fluent - loadstring(game:HttpGet("https://raw.githubusercontent.com/luffygear3.v1/freecam-panel/main/main.lua",true))()
 local Window - Fluent:CreateWindow({
+
 -- 🧠 SERVIÇOS
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
