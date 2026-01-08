@@ -1,0 +1,226 @@
+-- 🧠 SERVIÇOS
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+
+-- 👤 PLAYER
+local player = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- ⚙️ VARIÁVEIS
+local freecamEnabled = false
+local speedEnabled = false
+
+local camSpeed = 80
+local sensitivity = 0.35
+local rot = Vector2.zero
+local conn
+local oldType, oldCF
+
+local normalSpeed = 16
+local speedValue = 50
+
+-- 🧲 ARRASTAR (CLICK ≠ DRAG)
+local function makeDraggable(ui, clickCallback)
+	local dragging = false
+	local dragStart, startPos
+	local moved = false
+
+	ui.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1
+		or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			moved = false
+			dragStart = input.Position
+			startPos = ui.Position
+		end
+	end)
+
+	ui.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1
+		or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+			if not moved and clickCallback then
+				clickCallback()
+			end
+		end
+	end)
+
+	UIS.InputChanged:Connect(function(input)
+		if dragging and (
+			input.UserInputType == Enum.UserInputType.MouseMovement
+			or input.UserInputType == Enum.UserInputType.Touch
+		) then
+			local delta = input.Position - dragStart
+			if math.abs(delta.X) > 6 or math.abs(delta.Y) > 6 then
+				moved = true
+			end
+			ui.Position = UDim2.new(
+				startPos.X.Scale,
+				startPos.X.Offset + delta.X,
+				startPos.Y.Scale,
+				startPos.Y.Offset + delta.Y
+			)
+		end
+	end)
+end
+
+-- 👻 NOCLIP
+local function setNoclip(state)
+	for _,v in ipairs(character:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.CanCollide = not state
+		end
+	end
+end
+
+-- ⚡ SPEED
+local function setSpeed(state)
+	speedEnabled = state
+	humanoid.WalkSpeed = state and speedValue or normalSpeed
+end
+
+-- 🚀 FREECAM
+local function enableFreecam()
+	if freecamEnabled then return end
+	freecamEnabled = true
+
+	oldType = camera.CameraType
+	oldCF = camera.CFrame
+
+	camera.CameraType = Enum.CameraType.Scriptable
+	humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+	humanoid.AutoRotate = false
+	setNoclip(true)
+
+	rot = Vector2.zero
+
+	conn = RunService.RenderStepped:Connect(function(dt)
+		local move = humanoid.MoveDirection
+		local delta = UIS:GetMouseDelta()
+
+		rot += Vector2.new(-delta.Y, -delta.X) * sensitivity
+
+		local camRot =
+			CFrame.Angles(0, math.rad(rot.Y), 0) *
+			CFrame.Angles(math.rad(rot.X), 0, 0)
+
+		local dir = camRot.LookVector * move.Magnitude
+		camera.CFrame =
+			CFrame.new(camera.CFrame.Position + dir * camSpeed * dt) * camRot
+	end)
+end
+
+local function disableFreecam()
+	freecamEnabled = false
+	if conn then conn:Disconnect() end
+
+	camera.CameraType = oldType or Enum.CameraType.Custom
+	camera.CFrame = oldCF or camera.CFrame
+
+	humanoid.AutoRotate = true
+	humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+	setNoclip(false)
+end
+
+-- 🎨 GUI
+local gui = Instance.new("ScreenGui", player.PlayerGui)
+gui.Name = "ControlUI"
+gui.ResetOnSpawn = false
+
+-- 🟦 BOTÃO DE ABRIR PAINEL (IMAGEM + BORDA AZUL)
+local toggleUI = Instance.new("ImageButton", gui)
+toggleUI.Size = UDim2.new(0, 50, 0, 50)
+toggleUI.Position = UDim2.new(0, 20, 0, 20)
+toggleUI.BackgroundColor3 = Color3.fromRGB(20,20,20)
+toggleUI.AutoButtonColor = false
+toggleUI.Image = "rbxassetid://98436721604885"
+
+Instance.new("UICorner", toggleUI).CornerRadius = UDim.new(0, 12)
+
+local toggleStroke = Instance.new("UIStroke", toggleUI)
+toggleStroke.Color = Color3.fromRGB(0,140,255)
+toggleStroke.Thickness = 2
+toggleStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+-- 📜 PAINEL
+local frame = Instance.new("ScrollingFrame", gui)
+frame.Size = UDim2.new(0, 220, 0, 245)
+frame.Position = UDim2.new(0, 20, 0.5, -120)
+frame.CanvasSize = UDim2.new(0, 0, 0, 310)
+frame.ScrollBarThickness = 6
+frame.BackgroundColor3 = Color3.fromRGB(18,18,18)
+frame.BorderSizePixel = 0
+frame.Visible = false
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,18)
+
+-- 🏷️ MARCA D'ÁGUA
+local watermark = Instance.new("TextLabel", frame)
+watermark.Size = UDim2.new(1, -20, 0, 30)
+watermark.Position = UDim2.new(0, 10, 0, 5)
+watermark.Text = "Created by: @luffycarioca4466"
+watermark.Font = Enum.Font.GothamBold
+watermark.TextSize = 12
+watermark.TextColor3 = Color3.fromRGB(140,140,140)
+watermark.BackgroundTransparency = 1
+watermark.TextXAlignment = Enum.TextXAlignment.Center
+
+-- 🧲 ARRASTAR
+makeDraggable(toggleUI, function()
+	frame.Visible = not frame.Visible
+end)
+makeDraggable(frame)
+
+-- 🔘 FUNÇÃO BOTÃO
+local function button(txt, y)
+	local b = Instance.new("TextButton", frame)
+	b.Size = UDim2.new(0, 180, 0, 36)
+	b.Position = UDim2.new(0, 20, 0, y)
+	b.Text = txt
+	b.Font = Enum.Font.GothamBold
+	b.TextSize = 14
+	b.TextColor3 = Color3.new(1,1,1)
+	b.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	Instance.new("UICorner", b).CornerRadius = UDim.new(0, 12)
+	return b
+end
+
+-- 🔘 BOTÕES
+local freeOn  = button("🚀 Ativar Freecam", 45)
+local freeOff = button("🛑 Desativar Freecam", 90)
+local speedBtn = button("⚡ Speed: OFF", 135)
+
+local speedLabel = Instance.new("TextLabel", frame)
+speedLabel.Size = UDim2.new(0, 180, 0, 24)
+speedLabel.Position = UDim2.new(0, 20, 0, 180)
+speedLabel.Text = "🏃 Velocidade: "..speedValue
+speedLabel.Font = Enum.Font.GothamBold
+speedLabel.TextSize = 14
+speedLabel.TextColor3 = Color3.new(1,1,1)
+speedLabel.BackgroundTransparency = 1
+
+local minusBtn = button("➖ Speed", 215)
+local plusBtn  = button("➕ Speed", 260)
+
+-- 🎮 CONEXÕES
+freeOn.MouseButton1Click:Connect(enableFreecam)
+freeOff.MouseButton1Click:Connect(disableFreecam)
+
+speedBtn.MouseButton1Click:Connect(function()
+	setSpeed(not speedEnabled)
+	speedBtn.Text = speedEnabled and "⚡ Speed: ON" or "⚡ Speed: OFF"
+end)
+
+plusBtn.MouseButton1Click:Connect(function()
+	speedValue += 10
+	if speedEnabled then humanoid.WalkSpeed = speedValue end
+	speedLabel.Text = "🏃 Velocidade: "..speedValue
+end)
+
+minusBtn.MouseButton1Click:Connect(function()
+	speedValue = math.max(10, speedValue - 10)
+	if speedEnabled then humanoid.WalkSpeed = speedValue end
+	speedLabel.Text = "🏃 Velocidade: "..speedValue
+end)
