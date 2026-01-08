@@ -1,3 +1,5 @@
+local Fluent - loadstring(game:HttpGet("https://raw.githubusercontent.com/luffygear3.v1/freecam-panel/main/main.lua", true))()
+local Window - Fluent:CreateWindow({
 -- 🧠 SERVIÇOS
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -223,4 +225,4 @@ minusBtn.MouseButton1Click:Connect(function()
 	speedValue = math.max(10, speedValue - 10)
 	if speedEnabled then humanoid.WalkSpeed = speedValue end
 	speedLabel.Text = "🏃 Velocidade: "..speedValue
-end)
+end })
